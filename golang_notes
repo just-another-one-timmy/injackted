@@ -1,0 +1,10 @@
+Here are my notes on Go language (I am a beginner, so some of them might not make sense at all).
+
+Good:
+go command (build, clean, test, run).
+
+Bad:
+E.g. set1.Difference(set1).isEmpty() will throw run-time error (missing method 'isEmpty()'), but I would expect it to be caught at compile-time.
+
+Impossible (?) to create constant objects.
+Passing-by-value helps in this regard, still in case where I want to save memory and pass by pointer, there is no way to ensure that struct won't be modified.
