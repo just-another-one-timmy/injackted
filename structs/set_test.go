@@ -130,13 +130,80 @@ func TestEquals(t *testing.T) {
 }
 
 func TestIntersection(t *testing.T) {
-	//TODO(iaroslav): write test.
+	var set1, set2, set3, emptySet = NewSet(), NewSet(), NewSet(), NewSet()
+	const item1, item2, item3 = "ABBA", "Beatles", "Deep Purple"
+	set1.Add(item1)
+	set1.Add(item2)
+	set2.Add(item2)
+	set2.Add(item3)
+	set3.Add(item2)
+	// Intersection should be commutative.
+	if !set1.Intersection(set2).Equals(set2.Intersection(set1)) {
+		t.Log("Intersection() should be commutative.")
+		t.Fail()
+	}
+	// Intersection should be reflexive.
+	if !set1.Intersection(set1).Equals(set1) {
+		t.Log("Intersection() should be reflexive.")
+	}
+	if !set1.Intersection(set2).Equals(set3) {
+		t.Log("Intersection() should return expected set.")
+		t.Fail()
+	}
+	if !set3.Intersection(emptySet).IsEmpty() {
+		t.Log("Intersection() with empty set should be empty.")
+		t.Fail()
+	}
 }
 
 func TestUnion(t *testing.T) {
-	//TODO(iaroslav): write test.
+	var set1, set2, set3, emptySet = NewSet(), NewSet(), NewSet(), NewSet()
+	const item1, item2, item3 = "ABBA", "Beatles", "Deep Purple"
+	set1.Add(item1)
+	set1.Add(item2)
+	set2.Add(item2)
+	set2.Add(item3)
+	set3.Add(item1)
+	set3.Add(item2)
+	set3.Add(item3)
+	// Union should be commutative.
+	if !set1.Union(set2).Equals(set2.Union(set1)) {
+		t.Log("Union() should be commutative.")
+		t.Fail()
+	}
+	// Union should be reflexive.
+	if !set1.Union(set1).Equals(set1) {
+		t.Log("Union() should be reflexive.")
+	}
+	if !set1.Union(set2).Equals(set3) {
+		t.Log("Union() should return expected set.")
+		t.Fail()
+	}
+	if !set3.Union(emptySet).Equals(set3) {
+		t.Log("Union() with empty set should return original set.")
+		t.Fail()
+	}
 }
 
 func TestDifference(t *testing.T) {
-	//TODO(iaroslav): write test.
+	var set1, set2, set3, emptySet = NewSet(), NewSet(), NewSet(), NewSet()
+	const item1, item2, item3 = "ABBA", "Beatles", "Deep Purple"
+	set1.Add(item1)
+	set1.Add(item2)
+	set2.Add(item2)
+	set2.Add(item3)
+	set3.Add(item1)
+	// Difference between same sets is empty set.
+	if !set1.Difference(set1).IsEmpty() {
+		t.Log("Difference() with myself should be empty.")
+		t.Fail()
+	}
+	if !set1.Difference(set2).Equals(set3) {
+		t.Log("Difference() should return expected set.")
+		t.Fail()
+	}
+	if !set1.Difference(emptySet).Equals(set1) {
+		t.Log("Difference() with empty set should return original set.")
+		t.Fail()
+	}
 }
