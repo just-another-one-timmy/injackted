@@ -49,3 +49,63 @@ func (set *Set) Remove(item interface{}) {
 		set.size -= 1
 	}
 }
+
+func (set *Set) Equals(otherSet *Set) bool {
+	if set.Size() != otherSet.Size() {
+		return false
+	}
+	for item, _ := range set.internal {
+		if !otherSet.ItemPresent(item) {
+			return false
+		}
+	}
+	for item, _ := range otherSet.internal {
+		if !set.ItemPresent(item) {
+			return false
+		}
+	}
+	return true
+}
+
+// Intersects two sets, returns new set as a result.
+// Doesn't modify arguments.
+func (set *Set) Intersection(otherSet *Set) Set {
+	var result Set
+
+	for item, _ := range set.internal {
+		if otherSet.ItemPresent(item) {
+			result.Add(item)
+		}
+	}
+
+	return result
+}
+
+// Unions two sets, returns new set as a result.
+// Doesn't modify arguments.
+func (set *Set) Union(otherSet *Set) Set {
+	var result Set
+
+	for item, _ := range set.internal {
+		result.Add(item)
+	}
+	for item, _ := range otherSet.internal {
+		result.Add(item)
+	}
+
+	return result
+}
+
+// Finds a difference set - otherSet, returns new set as a result.
+// Doesn't modify arguments.
+func (set *Set) Difference(otherSet *Set) Set {
+	var result Set
+
+	for item, _ := range set.internal {
+		if !otherSet.ItemPresent(item) {
+			result.Add(item)
+		}
+	}
+
+	return result
+}

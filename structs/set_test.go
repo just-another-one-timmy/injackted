@@ -70,12 +70,73 @@ func TestRemove(t *testing.T) {
 		t.Fail()
 	}
 	if set.Size() != 0 {
-		t.Log("Size is not set correctly after deletion of element that was present.")
+		t.Log("Size() returns wrong value after deletion of element that was present.")
 		t.Fail()
 	}
 	set.Remove(item1)
 	if set.Size() != 0 {
-		t.Log("Size is not set correctly after deletion of element that was not present.")
+		t.Log("Size() returns wrong value after deletion of element that was not present.")
 		t.Fail()
 	}
+}
+
+func TestEquals(t *testing.T) {
+	var set1, set2 = NewSet(), NewSet()
+	const item1, item2 = 1, 2
+	if !set1.Equals(set2) {
+		t.Log("Equals() should return true for equal sets.")
+		t.Fail()
+	}
+	// In this function we also Check that Equals() is commutative.
+	if !set2.Equals(set1) {
+		t.Log("Equals() should be commutative")
+		t.Fail()
+	}
+	// And reflexive.
+	if !set1.Equals(set1) {
+		t.Log("Equals() should be reflexive.")
+		t.Fail()
+	}
+
+	set1.Add(item1)
+	set2.Add(item2)
+	if set1.Equals(set2) {
+		t.Log("Equals() should return false for non-equal sets.")
+		t.Fail()
+	}
+	if set2.Equals(set1) {
+		t.Log("Equals() should be commutative")
+		t.Fail()
+	}
+	if !set1.Equals(set1) {
+		t.Log("Equals() should be reflexive.")
+		t.Fail()
+	}
+
+	set1.Add(item2)
+	set2.Add(item1)
+	if !set1.Equals(set2) {
+		t.Log("Equals() should return true for equal sets.")
+		t.Fail()
+	}
+	if !set2.Equals(set1) {
+		t.Log("Equals() should be commutative")
+		t.Fail()
+	}
+	if !set1.Equals(set1) {
+		t.Log("Equals() should be reflexive.")
+		t.Fail()
+	}
+}
+
+func TestIntersection(t *testing.T) {
+	//TODO(iaroslav): write test.
+}
+
+func TestUnion(t *testing.T) {
+	//TODO(iaroslav): write test.
+}
+
+func TestDifference(t *testing.T) {
+	//TODO(iaroslav): write test.
 }
