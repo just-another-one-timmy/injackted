@@ -109,3 +109,7 @@ func (set *Set) Difference(otherSet *Set) *Set {
 
 	return result
 }
+
+func (set *Set) IterableMap() *map[interface{}]struct{} {
+	return &set.internal
+}
