@@ -16,8 +16,8 @@ func (index *Index) connectKeywordDoc(keyword interface{}, doc interface{}) {
 	addItem(index.keywordsByDoc, doc, keyword)
 }
 
-// Add value to the set returned from map by key.
-// Is key is not present, it will be added and empty set will be created.
+// Adds value to the set returned from map by key.
+// If key is not present, it will be added and empty set will be created.
 func addItem(setsByKey map[interface{}]*Set, key interface{}, value interface{}) {
 	if _, present := setsByKey[key]; !present {
 		setsByKey[key] = NewSet()
