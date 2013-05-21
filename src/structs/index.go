@@ -31,3 +31,10 @@ func (index *Index) IsConnected(keyword interface{}, doc interface{}) bool {
 	}
 	return index.docsByKeyword[keyword].ItemPresent(doc)
 }
+
+func (index *Index) GetDocumentsByKeyword(keyword interface{}) *Set {
+	if _, present := index.docsByKeyword[keyword]; !present {
+		return NewSet()
+	}
+	return index.docsByKeyword[keyword]
+}

@@ -58,3 +58,22 @@ func TestSmokeTest(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestGetDocumentsByKeyword(t *testing.T) {
+	index := NewIndex()
+	const keyword1, keyword2 = "ABBA", "Beatles"
+	const docId1, docId2 = 1, 2
+	index.ConnectKeywordDoc(keyword1, docId1)
+
+	set := NewSet()
+	set.Add(docId1)
+
+	if !index.GetDocumentsByKeyword(keyword1).Equals(set) {
+		t.Log("GetDocumentsByKeyword() should return expected set of documents.")
+		t.Fail()
+	}
+	if !index.GetDocumentsByKeyword(keyword2).IsEmpty() {
+		t.Log("GetDocumentsByKeyword() should return an empty set for an unused keyword")
+		t.Fail()
+	}
+}
