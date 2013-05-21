@@ -11,7 +11,7 @@ func NewIndex() *Index {
 
 // Connects keyword and doc.
 // Neither of them should be present prior to connecting.
-func (index *Index) connectKeywordDoc(keyword interface{}, doc interface{}) {
+func (index *Index) ConnectKeywordDoc(keyword interface{}, doc interface{}) {
 	addItem(index.docsByKeyword, keyword, doc)
 	addItem(index.keywordsByDoc, doc, keyword)
 }

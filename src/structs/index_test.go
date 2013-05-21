@@ -15,12 +15,12 @@ func TestSmokeTest(t *testing.T) {
 	// docId2 contains keyword2, keyword3
 	// docId3 contains keyword3, keyword1
 	var index = NewIndex()
-	index.connectKeywordDoc(keyword1, docId1)
-	index.connectKeywordDoc(keyword2, docId1)
-	index.connectKeywordDoc(keyword2, docId2)
-	index.connectKeywordDoc(keyword3, docId2)
-	index.connectKeywordDoc(keyword3, docId3)
-	index.connectKeywordDoc(keyword1, docId3)
+	index.ConnectKeywordDoc(keyword1, docId1)
+	index.ConnectKeywordDoc(keyword2, docId1)
+	index.ConnectKeywordDoc(keyword2, docId2)
+	index.ConnectKeywordDoc(keyword3, docId2)
+	index.ConnectKeywordDoc(keyword3, docId3)
+	index.ConnectKeywordDoc(keyword1, docId3)
 	if !index.IsConnected(keyword1, docId1) {
 		t.Logf("%v and %v should be connected.", keyword1, docId1)
 		t.Fail()
