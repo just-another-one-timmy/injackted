@@ -36,7 +36,7 @@ func (index *Index) IsConnected(keyword interface{}, doc interface{}) bool {
 // Returns set of docuements connected to given keyword in the index.
 // If keyword is not present in the index, new empty set is created and
 // returned as a result.
-func (index *Index) GetDocumentsByKeyword(keyword interface{}) *Set {
+func (index *Index) GetDocsByKeyword(keyword interface{}) *Set {
 	if _, present := index.docsByKeyword[keyword]; !present {
 		return NewSet()
 	}
