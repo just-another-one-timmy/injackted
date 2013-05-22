@@ -2,9 +2,14 @@ Here are my notes on Go language (I am a beginner, so some of them might not mak
 
 Good:
 go command (build, clean, test, run).
+No hierarchical OOP.
 
 Bad:
 E.g. set1.Difference(set1).isEmpty() will throw run-time error (missing method 'isEmpty()'), but I would expect it to be caught at compile-time.
 
 Impossible (?) to create constant objects.
 Passing-by-value helps in this regard, still in case where I want to save memory and pass by pointer, there is no way to ensure that struct won't be modified.
+
+Although interfaces are a pretty good feature in the way they implemented in Go, I don't see the way to go in the next situation.
+Imagine I have a list of people and I don't want to put maniacs there. They implement the same methods, but maniacs also have method "kill".
+So how would I inforce having only people but no maniacs in a list?
