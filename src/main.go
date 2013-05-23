@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"structs"
 )
 
@@ -74,8 +75,13 @@ func main() {
 		var userInput string
 		_, err := fmt.Scan(&userInput)
 		if err != nil {
-			fmt.Println(err.Error())
+			if err == io.EOF {
+				return
+			} else {
+				fmt.Println(err.Error())
+			}
+		} else {
+			handleCommand(userInput, index)
 		}
-		handleCommand(userInput, index)
 	}
 }
