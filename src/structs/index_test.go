@@ -59,7 +59,15 @@ func TestSmokeTest(t *testing.T) {
 	}
 }
 
-func TestGetDocsByKeyword(t *testing.T) {
+func iteratorToSet(iteratorChannel chan interface{}) *Set {
+	resultSet := NewSet()
+	for item := range iteratorChannel {
+		resultSet.Add(item)
+	}
+	return resultSet
+}
+
+func TestIteratorDocsByKeyword(t *testing.T) {
 	index := NewIndex()
 	const keyword1, keyword2 = "ABBA", "Beatles"
 	const docId1, docId2 = 1, 2
@@ -68,17 +76,17 @@ func TestGetDocsByKeyword(t *testing.T) {
 	set := NewSet()
 	set.Add(docId1)
 
-	if !index.GetDocsByKeyword(keyword1).Equals(set) {
-		t.Log("GetDocsByKeyword() should return expected set of documents.")
+	if !iteratorToSet(index.IteratorDocsByKeyword(keyword1)).Equals(set) {
+		t.Log("IteratorDocsByKeyword() should iterate over expected set of documents.")
 		t.Fail()
 	}
-	if !index.GetDocsByKeyword(keyword2).IsEmpty() {
-		t.Log("GetDocsByKeyword() should return an empty set for an unused keyword.")
+	if !iteratorToSet(index.IteratorDocsByKeyword(keyword2)).IsEmpty() {
+		t.Log("IteratorDocsByKeyword() should iterate over an empty set for an unused keyword.")
 		t.Fail()
 	}
 }
 
-func TestGetKeywordsByDoc(t *testing.T) {
+func TestIteratorKeywordsByDoc(t *testing.T) {
 	index := NewIndex()
 	const keyword1, keyword2 = "ABBA", "Beatles"
 	const docId1, docId2 = 1, 2
@@ -87,12 +95,74 @@ func TestGetKeywordsByDoc(t *testing.T) {
 	set := NewSet()
 	set.Add(keyword1)
 
-	if !index.GetKeywordsByDoc(docId1).Equals(set) {
-		t.Log("GetKeywordsByDoc() should return expected set of keywords.")
+	if !iteratorToSet(index.IteratorKeywordsByDoc(docId1)).Equals(set) {
+		t.Log("IteratorKeywordsByDoc() should iterate over expected set of keywords.")
 		t.Fail()
 	}
-	if !index.GetKeywordsByDoc(docId2).IsEmpty() {
-		t.Log("GetKeywordsByDoc() should return an empty set for an unused document.")
+	if !iteratorToSet(index.IteratorKeywordsByDoc(docId2)).IsEmpty() {
+		t.Log("IteratorKeywordsByDoc() should iterate over an empty set for an unused document.")
+		t.Fail()
+	}
+}
+
+func TestIteratorKeywords(t *testing.T) {
+	index := NewIndex()
+
+	if !iteratorToSet(index.IteratorKeywords()).IsEmpty() {
+		t.Log("IteratorKeywords() should iterate over an empty set if there are no keywords in the index.")
+		t.Fail()
+	}
+
+	index.ConnectKeywordDoc("ABBA", "bands")
+	index.ConnectKeywordDoc("Beatles", "bands")
+	index.ConnectKeywordDoc("Deep Purple", "bands")
+	index.ConnectKeywordDoc("Cat", "animals")
+	index.ConnectKeywordDoc("Dog", "animals")
+	index.ConnectKeywordDoc("Cat", "bands")
+	index.ConnectKeywordDoc("Black", "bands")
+	index.ConnectKeywordDoc("Black", "colors")
+	index.ConnectKeywordDoc("Yellow", "colors")
+
+	expectedSet := NewSet()
+	expectedSet.Add("ABBA")
+	expectedSet.Add("Beatles")
+	expectedSet.Add("Deep Purple")
+	expectedSet.Add("Cat")
+	expectedSet.Add("Dog")
+	expectedSet.Add("Black")
+	expectedSet.Add("Yellow")
+
+	if !iteratorToSet(index.IteratorKeywords()).Equals(expectedSet) {
+		t.Log("IteratorKeywords() should iterate over expected set of keywords.")
+		t.Fail()
+	}
+}
+
+func TestIteratorDocs(t *testing.T) {
+	index := NewIndex()
+
+	if !iteratorToSet(index.IteratorDocs()).IsEmpty() {
+		t.Log("IteratorDocs() should iterate over an empty set if there are no docs in the index.")
+		t.Fail()
+	}
+
+	index.ConnectKeywordDoc("ABBA", "bands")
+	index.ConnectKeywordDoc("Beatles", "bands")
+	index.ConnectKeywordDoc("Deep Purple", "bands")
+	index.ConnectKeywordDoc("Cat", "animals")
+	index.ConnectKeywordDoc("Dog", "animals")
+	index.ConnectKeywordDoc("Cat", "bands")
+	index.ConnectKeywordDoc("Black", "bands")
+	index.ConnectKeywordDoc("Black", "colors")
+	index.ConnectKeywordDoc("Yellow", "colors")
+
+	expectedSet := NewSet()
+	expectedSet.Add("bands")
+	expectedSet.Add("animals")
+	expectedSet.Add("colors")
+
+	if !iteratorToSet(index.IteratorDocs()).Equals(expectedSet) {
+		t.Log("IteratorKeywords() should iterate over expected set of docs.")
 		t.Fail()
 	}
 }

@@ -118,6 +118,6 @@ func (set *Set) Iterator() chan interface{} {
 			iteratorChannel <- item
 		}
 		close(iteratorChannel)
-	} ()
+	}()
 	return iteratorChannel
 }

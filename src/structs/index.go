@@ -33,22 +33,39 @@ func (index *Index) IsConnected(keyword interface{}, doc interface{}) bool {
 	return index.docsByKeyword[keyword].ItemPresent(doc)
 }
 
-// Returns set of documents connected to given keyword in the index.
-// If keyword is not present in the index, new empty set is created and
-// returned as a result.
-func (index *Index) GetDocsByKeyword(keyword interface{}) *Set {
+// Returns an iterator over documents connected to given keyword in the index.
+func (index *Index) IteratorDocsByKeyword(keyword interface{}) chan interface{} {
 	if _, present := index.docsByKeyword[keyword]; !present {
-		return NewSet()
+		return NewSet().Iterator()
 	}
-	return index.docsByKeyword[keyword]
+	return index.docsByKeyword[keyword].Iterator()
 }
 
-// Returns set of keywords connected to given doc in the index.
-// If doc is not present in the index, new empty set is created and
-// returned as a result.
-func (index *Index) GetKeywordsByDoc(doc interface{}) *Set {
+// Returns an iterator over keywords connected to given doc in the index.
+func (index *Index) IteratorKeywordsByDoc(doc interface{}) chan interface{} {
 	if _, present := index.keywordsByDoc[doc]; !present {
-		return NewSet()
+		return NewSet().Iterator()
 	}
-	return index.keywordsByDoc[doc]
+	return index.keywordsByDoc[doc].Iterator()
+}
+
+func iteratorOverMapKeys(mapToIterateOver map[interface{}]*Set) chan interface{} {
+	resultChannel := make(chan interface{})
+	go func() {
+		for key, _ := range mapToIterateOver {
+			resultChannel <- key
+		}
+		close(resultChannel)
+	}()
+	return resultChannel
+}
+
+// Returns an iterator over all keywords present in the index.
+func (index *Index) IteratorKeywords() chan interface{} {
+	return iteratorOverMapKeys(index.docsByKeyword)
+}
+
+// Returns an iterator over all docs present in the index.
+func (index *Index) IteratorDocs() chan interface{} {
+	return iteratorOverMapKeys(index.keywordsByDoc)
 }
