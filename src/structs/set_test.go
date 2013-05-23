@@ -208,16 +208,16 @@ func TestDifference(t *testing.T) {
 	}
 }
 
-func TestIterableMap(t *testing.T) {
+func TestIterator(t *testing.T) {
 	var set1, set2 = NewSet(), NewSet()
 	const item1, item2 = 123, "Deep Purple"
 	set1.Add(item1)
 	set1.Add(item2)
-	for item, _ := range *set1.IterableMap() {
+	for item := range set1.Iterator() {
 		set2.Add(item)
 	}
 	if !set1.Equals(set2) {
-		t.Log("IterableMap() should allow iterating over all values.")
+		t.Log("Iterator() should be iterating over all values.")
 		t.Fail()
 	}
 }

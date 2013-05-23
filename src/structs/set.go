@@ -110,6 +110,14 @@ func (set *Set) Difference(otherSet *Set) *Set {
 	return result
 }
 
-func (set *Set) IterableMap() *map[interface{}]struct{} {
-	return &set.internal
+// Iterator over items.
+func (set *Set) Iterator() chan interface{} {
+	iteratorChannel := make(chan interface{})
+	go func() {
+		for item, _ := range set.internal {
+			iteratorChannel <- item
+		}
+		close(iteratorChannel)
+	} ()
+	return iteratorChannel
 }
