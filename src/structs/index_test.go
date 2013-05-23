@@ -77,3 +77,22 @@ func TestGetDocsByKeyword(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestGetKeywordsByDoc(t *testing.T) {
+	index := NewIndex()
+	const keyword1, keyword2 = "ABBA", "Beatles"
+	const docId1, docId2 = 1, 2
+	index.ConnectKeywordDoc(keyword1, docId1)
+
+	set := NewSet()
+	set.Add(keyword1)
+
+	if !index.GetKeywordsByDoc(docId1).Equals(set) {
+		t.Log("GetKeywordsByDoc() should return expected set of keywords.")
+		t.Fail()
+	}
+	if !index.GetKeywordsByDoc(docId2).IsEmpty() {
+		t.Log("GetKeywordsByDoc() should return an empty set for an unused document.")
+		t.Fail()
+	}
+}

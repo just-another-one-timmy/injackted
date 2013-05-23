@@ -42,3 +42,13 @@ func (index *Index) GetDocsByKeyword(keyword interface{}) *Set {
 	}
 	return index.docsByKeyword[keyword]
 }
+
+// Returns set of keywords connected to given doc in the index.
+// If doc is not present in the index, new empty set is created and
+// returned as a result.
+func (index *Index) GetKeywordsByDoc(doc interface{}) *Set {
+	if _, present := index.keywordsByDoc[doc]; !present {
+		return NewSet()
+	}
+	return index.keywordsByDoc[doc]
+}
