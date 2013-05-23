@@ -73,7 +73,7 @@ func TestGetDocsByKeyword(t *testing.T) {
 		t.Fail()
 	}
 	if !index.GetDocsByKeyword(keyword2).IsEmpty() {
-		t.Log("GetDocsByKeyword() should return an empty set for an unused keyword")
+		t.Log("GetDocsByKeyword() should return an empty set for an unused keyword.")
 		t.Fail()
 	}
 }
