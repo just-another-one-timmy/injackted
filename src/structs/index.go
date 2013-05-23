@@ -16,9 +16,9 @@ func NewIndex() *Index {
 
 // Connects keyword and doc.
 // Neither of them should be present prior to connecting.
-func (index *Index) ConnectKeywordDoc(keyword interface{}, doc interface{}) {
-	addItem(index.docsByKeyword, keyword, doc)
-	addItem(index.keywordsByDoc, doc, keyword)
+func (i *Index) ConnectKeywordDoc(keyword interface{}, doc interface{}) {
+	addItem(i.docsByKeyword, keyword, doc)
+	addItem(i.keywordsByDoc, doc, keyword)
 }
 
 // Adds value to the set returned from map by key.
@@ -31,27 +31,27 @@ func addItem(setsByKey map[interface{}]*Set, key interface{}, value interface{})
 }
 
 // Checks if given keyword and document are connected in the index.
-func (index *Index) IsConnected(keyword interface{}, doc interface{}) bool {
-	if _, present := index.docsByKeyword[keyword]; !present {
+func (i *Index) IsConnected(keyword interface{}, doc interface{}) bool {
+	if _, present := i.docsByKeyword[keyword]; !present {
 		return false
 	}
-	return index.docsByKeyword[keyword].ItemPresent(doc)
+	return i.docsByKeyword[keyword].ItemPresent(doc)
 }
 
 // Returns an iterator over documents connected to given keyword in the index.
-func (index *Index) IteratorDocsByKeyword(keyword interface{}) chan interface{} {
-	if _, present := index.docsByKeyword[keyword]; !present {
+func (i *Index) IteratorDocsByKeyword(keyword interface{}) chan interface{} {
+	if _, present := i.docsByKeyword[keyword]; !present {
 		return NewSet().Iterator()
 	}
-	return index.docsByKeyword[keyword].Iterator()
+	return i.docsByKeyword[keyword].Iterator()
 }
 
 // Returns an iterator over keywords connected to given doc in the index.
-func (index *Index) IteratorKeywordsByDoc(doc interface{}) chan interface{} {
-	if _, present := index.keywordsByDoc[doc]; !present {
+func (i *Index) IteratorKeywordsByDoc(doc interface{}) chan interface{} {
+	if _, present := i.keywordsByDoc[doc]; !present {
 		return NewSet().Iterator()
 	}
-	return index.keywordsByDoc[doc].Iterator()
+	return i.keywordsByDoc[doc].Iterator()
 }
 
 func iteratorOverMapKeys(mapToIterateOver map[interface{}]*Set) chan interface{} {
@@ -66,18 +66,18 @@ func iteratorOverMapKeys(mapToIterateOver map[interface{}]*Set) chan interface{}
 }
 
 // Returns an iterator over all keywords present in the index.
-func (index *Index) IteratorKeywords() chan interface{} {
-	return iteratorOverMapKeys(index.docsByKeyword)
+func (i *Index) IteratorKeywords() chan interface{} {
+	return iteratorOverMapKeys(i.docsByKeyword)
 }
 
 // Returns an iterator over all docs present in the index.
-func (index *Index) IteratorDocs() chan interface{} {
-	return iteratorOverMapKeys(index.keywordsByDoc)
+func (i *Index) IteratorDocs() chan interface{} {
+	return iteratorOverMapKeys(i.keywordsByDoc)
 }
 
-func (index *Index) Print(w io.Writer) (n int, err error) {
+func (i *Index) Print(w io.Writer) (n int, err error) {
 	resultN := 0
-	for keyword := range index.IteratorKeywords() {
+	for keyword := range i.IteratorKeywords() {
 		stringKeyword, _ := keyword.(string)
 		if n, err := w.Write([]byte(stringKeyword + " ")); err != nil {
 			return n + resultN, err
@@ -85,11 +85,11 @@ func (index *Index) Print(w io.Writer) (n int, err error) {
 			resultN += n
 		}
 		docsCount := 0
-		for _ = range index.IteratorDocsByKeyword(keyword) {
+		for _ = range i.IteratorDocsByKeyword(keyword) {
 			docsCount++
 		}
 		w.Write([]byte(strconv.Itoa(docsCount) + "\n"))
-		for doc := range index.IteratorDocsByKeyword(keyword) {
+		for doc := range i.IteratorDocsByKeyword(keyword) {
 			stringDoc, _ := doc.(string)
 			if n, err := w.Write([]byte("\t" + stringDoc + "\n")); err != nil {
 				return n + resultN, err
