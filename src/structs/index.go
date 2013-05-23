@@ -33,7 +33,7 @@ func (index *Index) IsConnected(keyword interface{}, doc interface{}) bool {
 	return index.docsByKeyword[keyword].ItemPresent(doc)
 }
 
-// Returns set of docuements connected to given keyword in the index.
+// Returns set of documents connected to given keyword in the index.
 // If keyword is not present in the index, new empty set is created and
 // returned as a result.
 func (index *Index) GetDocsByKeyword(keyword interface{}) *Set {
