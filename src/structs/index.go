@@ -1,5 +1,10 @@
 package structs
 
+import (
+	"io"
+	"strconv"
+)
+
 type Index struct {
 	docsByKeyword, keywordsByDoc map[interface{}]*Set
 }
@@ -68,4 +73,30 @@ func (index *Index) IteratorKeywords() chan interface{} {
 // Returns an iterator over all docs present in the index.
 func (index *Index) IteratorDocs() chan interface{} {
 	return iteratorOverMapKeys(index.keywordsByDoc)
+}
+
+func (index *Index) Print(w io.Writer) (n int, err error) {
+	resultN := 0
+	for keyword := range index.IteratorKeywords() {
+		stringKeyword, _ := keyword.(string)
+		if n, err := w.Write([]byte(stringKeyword + " ")); err != nil {
+			return n + resultN, err
+		} else {
+			resultN += n
+		}
+		docsCount := 0
+		for _ = range index.IteratorDocsByKeyword(keyword) {
+			docsCount++
+		}
+		w.Write([]byte(strconv.Itoa(docsCount) + "\n"))
+		for doc := range index.IteratorDocsByKeyword(keyword) {
+			stringDoc, _ := doc.(string)
+			if n, err := w.Write([]byte("\t" + stringDoc + "\n")); err != nil {
+				return n + resultN, err
+			} else {
+				resultN += n
+			}
+		}
+	}
+	return resultN, nil
 }
