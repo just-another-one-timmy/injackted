@@ -9,5 +9,5 @@ Sample run
 git clone https://github.com/just-another-one-timmy/injackted
 cd injackted
 export GOPATH=$(pwd)
-echo "load example-index list-all bye-bye" | go run src/main.go
+echo "load example-index list-all bye-bye" | go run src/sampleclient.go
 ```
