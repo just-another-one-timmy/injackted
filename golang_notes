@@ -11,6 +11,8 @@ Duck typing.
 Channels.
 Goroutines.
 Defer.
+No compiler warnings (only errors).
+Compile error on unused vars or imports (sometimes annoying, but 95% of the time is very useful).
 
 Bad:
 E.g. set1.Difference(set1).isEmpty() will throw run-time error (missing method 'isEmpty()'), but I would expect it to be caught at compile-time.
