@@ -73,9 +73,9 @@ func listAllDocs(index *structs.Index) {
 func listAll(index *structs.Index) {
 	fmt.Println("Contents of the index:")
 	for doc := range index.IteratorDocs() {
-		fmt.Printf("%v\n", doc);
+		fmt.Printf("%v\n", doc)
 		for keyword := range index.IteratorKeywordsByDoc(doc) {
-			fmt.Printf("\t%v\n", keyword);
+			fmt.Printf("\t%v\n", keyword)
 		}
 	}
 }
@@ -93,7 +93,7 @@ func handleCommand(command string, index *structs.Index) bool {
 			"list-keywords <doc>:        lists keywords contained in <doc>\n" +
 			"list-all-keywords:          lists all keywords\n" +
 			"list-all-docs:              lists all docs\n" +
-			"list-all:                   list all docs and keywords\n "+
+			"list-all:                   list all docs and keywords\n" +
 			"bye-bye:                    quits\n")
 	case "load":
 		var arg string

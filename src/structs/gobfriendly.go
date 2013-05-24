@@ -8,7 +8,7 @@ type GobIndex struct {
 	DocsByKeyword, KeywordsByDoc map[interface{}]*GobSet
 }
 
-func IndexToGobIndex(i *Index) *GobIndex{
+func IndexToGobIndex(i *Index) *GobIndex {
 	result := &GobIndex{make(map[interface{}]*GobSet),
 		make(map[interface{}]*GobSet)}
 	for doc, keywords := range i.keywordsByDoc {
@@ -20,7 +20,7 @@ func IndexToGobIndex(i *Index) *GobIndex{
 	return result
 }
 
-func GobIndexToIndex(g *GobIndex) *Index{
+func GobIndexToIndex(g *GobIndex) *Index {
 	result := NewIndex()
 	for doc, keywords := range g.KeywordsByDoc {
 		for keyword, _ := range keywords.Internal {
@@ -30,7 +30,7 @@ func GobIndexToIndex(g *GobIndex) *Index{
 	return result
 }
 
-func SetToGobSet(s *Set) *GobSet{
+func SetToGobSet(s *Set) *GobSet {
 	result := &GobSet{make(map[interface{}]struct{})}
 	for item := range s.Iterator() {
 		result.Internal[item] = struct{}{}
@@ -38,7 +38,7 @@ func SetToGobSet(s *Set) *GobSet{
 	return result
 }
 
-func GobSetToSet(g *GobSet) *Set{
+func GobSetToSet(g *GobSet) *Set {
 	result := NewSet()
 	for key, _ := range g.Internal {
 		result.Add(key)
