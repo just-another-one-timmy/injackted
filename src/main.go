@@ -1,70 +1,40 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"io"
 	"os"
 	"structs"
 )
 
-func loadIndex(index *structs.Index, fileName string) {
-	// TODO(iaroslav): clear index before loading.
-	// For now, let it be.
-	inputFile, err := os.Open(fileName)
+func loadIndex(index *structs.Index, fileName string) error {
+	f, err := os.Open(fileName)
 	if err != nil {
-		fmt.Println("Error while loading index.")
-		fmt.Printf("%v\n", err.Error())
-		return
+		return err
 	}
-	defer func() {
-		if err := inputFile.Close(); err != nil {
-			fmt.Println("Error while loading index.")
-			fmt.Printf("%v\n", err.Error())
-		} else {
-			fmt.Printf("Successfully loaded index from %v\n", fileName)
-		}
-	}()
 
-	for {
-		var keyword string
-		var docsCount int
-		if _, err := fmt.Fscan(inputFile, &keyword, &docsCount); err != nil {
-			if err != io.EOF {
-				fmt.Println("Error while loading index.")
-				fmt.Printf("%v\n", err.Error())
-			}
-			return
-		}
-		for i := 0; i < docsCount; i++ {
-			var doc string
-			if _, err := fmt.Fscan(inputFile, &doc); err != nil {
-				fmt.Println("Error while loading index.")
-				fmt.Printf("%v\n", err.Error())
-			}
-			index.ConnectKeywordDoc(keyword, doc)
-		}
+	gobIndex := &structs.GobIndex{nil, nil}
+
+	decoder := gob.NewDecoder(f)
+	if err := decoder.Decode(gobIndex); err != nil {
+		return err
 	}
+
+	*index = *structs.GobIndexToIndex(gobIndex)
+	return nil
 }
 
-func saveIndex(index *structs.Index, fileName string) {
-	outputFile, err := os.Create(fileName)
+func saveIndex(index *structs.Index, fileName string) error {
+	f, err := os.Create(fileName)
 	if err != nil {
-		fmt.Println("Error while saving index.")
-		fmt.Printf("%v\n", err.Error())
-		return
+		return err
 	}
-	defer func() {
-		if err := outputFile.Close(); err != nil {
-			fmt.Println("Error while saving index.")
-			fmt.Printf("%v\n", err.Error())
-		} else {
-			fmt.Printf("Successfully saved index to %v\n", fileName)
-		}
-	}()
-	if _, err := index.Print(outputFile); err != nil {
-		fmt.Printf("Error while savin index.")
-		fmt.Printf("%v\n", err.Error())
-	}
+
+	encoder := gob.NewEncoder(f)
+	err = encoder.Encode(structs.IndexToGobIndex(index))
+
+	return err
 }
 
 func connect(index *structs.Index, keyword string, doc string) {
@@ -117,12 +87,20 @@ func handleCommand(command string, index *structs.Index) bool {
 	case "load":
 		var arg string
 		fmt.Scan(&arg)
-		loadIndex(index, arg)
+		if err := loadIndex(index, arg); err != nil {
+			fmt.Printf("Error while loading index: %v\n", err.Error())
+		} else {
+			fmt.Println("Successfully loaded index.")
+		}
 		return false
 	case "save":
 		var arg string
 		fmt.Scan(&arg)
-		saveIndex(index, arg)
+		if err := saveIndex(index, arg); err != nil {
+			fmt.Printf("Error while saving index: %v\n", err.Error())
+		} else {
+			fmt.Println("Successfully saved index.")
+		}
 		return false
 	case "connect":
 		var arg1, arg2 string
@@ -152,6 +130,7 @@ func handleCommand(command string, index *structs.Index) bool {
 		fmt.Printf("Unrecognized command: %q\n", command)
 		return false
 	}
+
 	// To make compiler happy.
 	return false
 }
