@@ -1,4 +1,4 @@
-package main
+B1;3402;0cpackage main
 
 import (
 	"encoding/gob"
@@ -19,7 +19,6 @@ func reportError(err error) {
 }
 
 func processFile(fileName string, c chan DocKeywordPair, w chan string) {
-	//c <- *(&DocKeywordPair{fileName, "tempkeyword!"})
 	// Inform receiver that current goroutine is done.
 	defer func() {
 		w <- fileName
