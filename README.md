@@ -17,7 +17,7 @@ go build src/sampleclient.go
 To build an index:
 ```
 # Assuming you are in the 'injackted' dir:
-find `pwd` -t f -name "*.go" | ./crawler < -o example-index
+find `pwd` -type f -name "*.go" | ./crawler < -o example-index
 ```
 
 To run samle client:
