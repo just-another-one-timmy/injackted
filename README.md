@@ -22,5 +22,5 @@ find `pwd` -type f -name "*.go" | ./crawler -o example-index
 
 To run samle client:
 ```
-echo "load example-index list-all bye-bye" | ./sampleclient
+echo "load example-index list-all q ^main$ bye-bye" | ./sampleclient
 ```
