@@ -44,30 +44,42 @@ func connect(index *structs.Index, keyword string, doc string) {
 
 func listDocs(index *structs.Index, keyword string) {
 	fmt.Printf("Documents which contain keyword %q:\n", keyword)
+	count := 0
 	for doc := range index.IteratorDocsByKeyword(keyword) {
+		count++
 		fmt.Printf("\t%v\n", doc)
 	}
+	fmt.Printf("%v in total\n", count)
 }
 
 func listKeywords(index *structs.Index, doc string) {
 	fmt.Printf("Keywords contained in %q:\n", doc)
+	count := 0
 	for keyword := range index.IteratorKeywordsByDoc(doc) {
+		count++
 		fmt.Printf("\t%v\n", keyword)
 	}
+	fmt.Printf("%v in total\n", count)
 }
 
 func listAllKeywords(index *structs.Index) {
 	fmt.Println("There are next keywords in the index:")
+	count := 0
 	for keyword := range index.IteratorKeywords() {
+		count++
 		fmt.Printf("\t%v\n", keyword)
 	}
+	fmt.Printf("%v in total\n", count)
 }
 
 func listAllDocs(index *structs.Index) {
 	fmt.Println("There are next docs in the index:")
+	count := 0
 	for doc := range index.IteratorDocs() {
+		count++
 		fmt.Printf("\t%v\n", doc)
 	}
+	fmt.Printf("%v in total\n", count)
 }
 
 func listAll(index *structs.Index) {
