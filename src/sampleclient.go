@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"structs"
+	"regexp"
 )
 
 func loadIndex(index *structs.Index, fileName string) error {
@@ -92,6 +93,40 @@ func listAll(index *structs.Index) {
 	}
 }
 
+func queryIndex(index *structs.Index, rexpstr string) {
+	r, err := regexp.Compile(rexpstr);
+	if err != nil {
+		fmt.Printf("%v\n", err.Error())
+		return
+	}
+	matchedDocsCount, matchedKeywordsCount := 0, 0
+	fmt.Println("Docs matched by regexp:")
+	for doc := range index.IteratorDocs() {
+		docStr := doc.(string)
+		if r.MatchString(docStr) {
+			matchedDocsCount++
+			fmt.Println(docStr)
+		}
+	}
+	fmt.Printf("%v total.\n", matchedDocsCount)
+	fmt.Println("Keywords matched by regexp:")
+	for keyword := range index.IteratorKeywords() {
+		keywordStr := keyword.(string)
+		if r.MatchString(keywordStr) {
+			fmt.Println(keyword)
+			matchedKeywordsCount++
+			inDocs := make([]string, 0)
+			for doc := range index.IteratorDocsByKeyword(keywordStr) {
+				inDocs = append(inDocs, doc.(string))
+			}
+			fmt.Printf("\tFound in the next %v documents:\n", len(inDocs))
+			for _, doc := range inDocs {
+				fmt.Printf("\t%v\n", doc)
+			}
+		}
+	}
+}
+
 // Returns true if quit command received.
 func handleCommand(command string, index *structs.Index) bool {
 	switch command {
@@ -99,6 +134,7 @@ func handleCommand(command string, index *structs.Index) bool {
 		fmt.Printf("Available commands:\n" +
 			"help:                       displays help\n" +
 			"load <filename>:            loads index from <filename>\n" +
+			"q <regexp-query>:           searches the stuff\n" +
 			"save <filename>:            saves index to <filename>\n" +
 			"connect <keyword> <doc>:    connects <keyword> and <doc> in index\n" +
 			"list-docs <keyword>:        lists documents containing <keyword>\n" +
@@ -115,6 +151,11 @@ func handleCommand(command string, index *structs.Index) bool {
 		} else {
 			fmt.Println("Successfully loaded index.")
 		}
+		return false
+	case "q":
+		var arg string
+		fmt.Scan(&arg)
+		queryIndex(index, arg)
 		return false
 	case "save":
 		var arg string
