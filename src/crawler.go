@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/gob"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -13,18 +14,16 @@ type DocKeywordPair struct {
 	Keyword string
 }
 
-func sendTrue(w chan bool) {
-	w <- true
-}
-
 func reportError(err error) {
 	fmt.Fprintf(os.Stderr, "%v\n", err.Error())
 }
 
-func processFile(fileName string, c chan DocKeywordPair, w chan bool) {
+func processFile(fileName string, c chan DocKeywordPair, w chan string) {
 	//c <- *(&DocKeywordPair{fileName, "tempkeyword!"})
 	// Inform receiver that current goroutine is done.
-	defer sendTrue(w)
+	defer func() {
+		w <- fileName
+	}()
 
 	if f, err := os.Open(fileName); err == nil {
 		for {
@@ -46,7 +45,7 @@ func crawl(index *structs.Index, fileNames []string) {
 	// channel to recieve doc-keyword pairs.
 	c := make(chan DocKeywordPair)
 	// channel to count number of go-routines.
-	w := make(chan bool)
+	w := make(chan string)
 	goroutinesCount := len(fileNames)
 	for _, fileName := range fileNames {
 		go processFile(fileName, c, w)
@@ -56,7 +55,9 @@ func crawl(index *structs.Index, fileNames []string) {
 		case docKeywordPair := <-c:
 			index.ConnectKeywordDoc(docKeywordPair.Keyword,
 				docKeywordPair.Doc)
-		case _ = <-w:
+		case name := <-w:
+			percentage := (1.0 - float64(goroutinesCount)/float64(len(fileNames))) * 100
+			fmt.Printf("Processed file %v\t%6.2f%%\n", name, percentage)
 			goroutinesCount--
 		}
 	}
@@ -75,13 +76,28 @@ func crawl(index *structs.Index, fileNames []string) {
 }
 
 // Copy-paste-hacked from sampleclient.go.
-func saveIndex(index *structs.Index) error {
-	encoder := gob.NewEncoder(os.Stdout)
+func saveIndex(index *structs.Index, w io.Writer) error {
+	encoder := gob.NewEncoder(w)
 	err := encoder.Encode(structs.IndexToGobIndex(index))
 	return err
 }
 
 func main() {
+	var outputFileName string
+	flag.StringVar(&outputFileName, "o", "", "File name to write index to.")
+	flag.Parse()
+
+	if len(outputFileName) == 0 {
+		fmt.Fprintf(os.Stderr, "Output file not specified. Use -o option.\n")
+		return
+	}
+
+	outputFile, err := os.Create(outputFileName)
+	if err != nil {
+		reportError(err)
+		return
+	}
+
 	fileNames := make([]string, 0)
 	for {
 		var fileName string
@@ -98,7 +114,7 @@ func main() {
 	index := structs.NewIndex()
 	crawl(index, fileNames)
 
-	if err := saveIndex(index); err != nil {
+	if err = saveIndex(index, outputFile); err != nil {
 		reportError(err)
 	}
 }
