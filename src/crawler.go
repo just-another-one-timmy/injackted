@@ -1,4 +1,4 @@
-B1;3402;0cpackage main
+package main
 
 import (
 	"encoding/gob"
