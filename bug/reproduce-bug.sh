@@ -19,7 +19,7 @@ output=$(find `pwd` -name "file*" | \
 if [ "$fnum" != "$output" ];
 then
     echo "Bug is here. :'("
-    echo "expected $expected, but got $output"
+    echo "expected $fnum, but got $output"
 else
     echo "Yay, bug is not here!"
 fi
