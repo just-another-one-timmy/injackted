@@ -42,6 +42,8 @@ func processFile(fileName string, c chan DocKeywordPair, w chan string, semaphor
 		}
 		f.Close()
 		<-semaphore
+	} else {
+		reportError(err)
 	}
 }
 
