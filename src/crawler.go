@@ -9,6 +9,8 @@ import (
 	"structs"
 )
 
+const MAX_FILES_OPEN = 999
+
 type DocKeywordPair struct {
 	Doc     string
 	Keyword string
@@ -18,12 +20,13 @@ func reportError(err error) {
 	fmt.Fprintf(os.Stderr, "%v\n", err.Error())
 }
 
-func processFile(fileName string, c chan DocKeywordPair, w chan string) {
+func processFile(fileName string, c chan DocKeywordPair, w chan string, semaphore chan interface{}) {
 	// Inform receiver that current goroutine is done.
 	defer func() {
 		w <- fileName
 	}()
 
+	semaphore <- struct{}{}
 	if f, err := os.Open(fileName); err == nil {
 		for {
 			var keyword string
@@ -37,6 +40,8 @@ func processFile(fileName string, c chan DocKeywordPair, w chan string) {
 				c <- DocKeywordPair{fileName, keyword}
 			}
 		}
+		f.Close()
+		<-semaphore
 	}
 }
 
@@ -45,9 +50,12 @@ func crawl(index *structs.Index, fileNames []string) {
 	c := make(chan DocKeywordPair)
 	// channel to count number of go-routines.
 	w := make(chan string)
+
+	semaphore := make(chan interface{}, MAX_FILES_OPEN)
+
 	goroutinesCount := len(fileNames)
 	for _, fileName := range fileNames {
-		go processFile(fileName, c, w)
+		go processFile(fileName, c, w, semaphore)
 	}
 	for goroutinesCount > 0 {
 		select {

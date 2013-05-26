@@ -1,5 +1,5 @@
 # Create files
-declare -r fnum=1021
+declare -r fnum=10000
 for i in $(seq 1 $fnum)
 do
     echo "keyword$i" > "file$i"
