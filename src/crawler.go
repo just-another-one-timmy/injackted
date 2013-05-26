@@ -63,9 +63,9 @@ func crawl(index *structs.Index, fileNames []string) {
 			index.ConnectKeywordDoc(docKeywordPair.Keyword,
 				docKeywordPair.Doc)
 		case name := <-w:
+			goroutinesCount--
 			percentage := (1.0 - float64(goroutinesCount)/float64(len(fileNames))) * 100
 			fmt.Printf("Processed file %v\t%6.2f%%\n", name, percentage)
-			goroutinesCount--
 		}
 	}
 
