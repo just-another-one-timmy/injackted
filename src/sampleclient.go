@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"structs"
 	"regexp"
+	"structs"
 )
 
 func loadIndex(index *structs.Index, fileName string) error {
@@ -94,7 +94,7 @@ func listAll(index *structs.Index) {
 }
 
 func queryIndex(index *structs.Index, rexpstr string) {
-	r, err := regexp.Compile(rexpstr);
+	r, err := regexp.Compile(rexpstr)
 	if err != nil {
 		fmt.Printf("%v\n", err.Error())
 		return
