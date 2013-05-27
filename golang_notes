@@ -29,3 +29,10 @@ Strange error-handling. I must be doing it wrong, but my source code is full of 
 No operator-overloading and no way to pass an equality function to map.
 Hance, impossible to use slices as keys in map.
 
+Easy to lost the error. E.g.
+f, err := os.Open(...)
+if err == nil {
+}
+In case when err != nil nothing will inform me that something bad happened.
+I know it's my bug - but why doesn't language help me?
+Perhaps some automated tools like golint will appear and let us check for this kind of bugs.
