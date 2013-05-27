@@ -125,6 +125,7 @@ func queryIndex(index *structs.Index, rexpstr string) {
 			}
 		}
 	}
+	fmt.Printf("%v total.\n", matchedKeywordsCount)
 }
 
 // Returns true if quit command received.
