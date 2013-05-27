@@ -70,7 +70,7 @@ func (s *Set) Equals(otherSet *Set) bool {
 // Intersects two sets, returns new set as a result.
 // Doesn't modify arguments.
 func (s *Set) Intersection(otherSet *Set) *Set {
-	var result = NewSet()
+	result := NewSet()
 
 	for item, _ := range s.internal {
 		if otherSet.ItemPresent(item) {
@@ -84,7 +84,7 @@ func (s *Set) Intersection(otherSet *Set) *Set {
 // Unions two sets, returns new set as a result.
 // Doesn't modify arguments.
 func (s *Set) Union(otherSet *Set) *Set {
-	var result = NewSet()
+	result := NewSet()
 
 	for item, _ := range s.internal {
 		result.Add(item)
@@ -99,7 +99,7 @@ func (s *Set) Union(otherSet *Set) *Set {
 // Finds a difference set - otherSet, returns new set as a result.
 // Doesn't modify arguments.
 func (s *Set) Difference(otherSet *Set) *Set {
-	var result = NewSet()
+	result := NewSet()
 
 	for item, _ := range s.internal {
 		if !otherSet.ItemPresent(item) {

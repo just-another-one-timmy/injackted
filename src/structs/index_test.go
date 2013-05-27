@@ -14,7 +14,7 @@ func TestSmokeTest(t *testing.T) {
 	// docId1 contains keyword1, keyword2
 	// docId2 contains keyword2, keyword3
 	// docId3 contains keyword3, keyword1
-	var index = NewIndex()
+	index := NewIndex()
 	index.ConnectKeywordDoc(keyword1, docId1)
 	index.ConnectKeywordDoc(keyword2, docId1)
 	index.ConnectKeywordDoc(keyword2, docId2)

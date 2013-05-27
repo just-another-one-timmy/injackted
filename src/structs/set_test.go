@@ -9,7 +9,7 @@ import (
 )
 
 func TestEmptySet(t *testing.T) {
-	var emptySet = NewSet()
+	emptySet := NewSet()
 	if emptySet.Size() > 0 {
 		t.Log("Size() should return 0 for empty set.")
 		t.Fail()
@@ -21,7 +21,7 @@ func TestEmptySet(t *testing.T) {
 }
 
 func testIsEmpty(t *testing.T) {
-	var set = NewSet()
+	set := NewSet()
 	set.Add(1)
 	if set.IsEmpty() {
 		t.Log("IsEmpty() should return false for non-empty set.")
@@ -30,7 +30,7 @@ func testIsEmpty(t *testing.T) {
 }
 
 func TestAddOneItem(t *testing.T) {
-	var set = NewSet()
+	set := NewSet()
 	const item1, item2 = 1, 2
 
 	set.Add(item1)
@@ -61,7 +61,7 @@ func TestAddOneItem(t *testing.T) {
 }
 
 func TestRemove(t *testing.T) {
-	var set = NewSet()
+	set := NewSet()
 	const item1, item2 = 1, 2
 	set.Add(item1)
 	set.Remove(item1)
@@ -81,7 +81,7 @@ func TestRemove(t *testing.T) {
 }
 
 func TestEquals(t *testing.T) {
-	var set1, set2 = NewSet(), NewSet()
+	set1, set2 := NewSet(), NewSet()
 	const item1, item2 = 1, 2
 	if !set1.Equals(set2) {
 		t.Log("Equals() should return true for equal sets.")
@@ -130,7 +130,7 @@ func TestEquals(t *testing.T) {
 }
 
 func TestIntersection(t *testing.T) {
-	var set1, set2, set3, emptySet = NewSet(), NewSet(), NewSet(), NewSet()
+	set1, set2, set3, emptySet := NewSet(), NewSet(), NewSet(), NewSet()
 	const item1, item2, item3 = "ABBA", "Beatles", "Deep Purple"
 	set1.Add(item1)
 	set1.Add(item2)
@@ -157,7 +157,7 @@ func TestIntersection(t *testing.T) {
 }
 
 func TestUnion(t *testing.T) {
-	var set1, set2, set3, emptySet = NewSet(), NewSet(), NewSet(), NewSet()
+	set1, set2, set3, emptySet := NewSet(), NewSet(), NewSet(), NewSet()
 	const item1, item2, item3 = "ABBA", "Beatles", "Deep Purple"
 	set1.Add(item1)
 	set1.Add(item2)
@@ -186,7 +186,7 @@ func TestUnion(t *testing.T) {
 }
 
 func TestDifference(t *testing.T) {
-	var set1, set2, set3, emptySet = NewSet(), NewSet(), NewSet(), NewSet()
+	set1, set2, set3, emptySet := NewSet(), NewSet(), NewSet(), NewSet()
 	const item1, item2, item3 = "ABBA", "Beatles", "Deep Purple"
 	set1.Add(item1)
 	set1.Add(item2)
@@ -209,7 +209,7 @@ func TestDifference(t *testing.T) {
 }
 
 func TestIterator(t *testing.T) {
-	var set1, set2 = NewSet(), NewSet()
+	set1, set2 := NewSet(), NewSet()
 	const item1, item2 = 123, "Deep Purple"
 	set1.Add(item1)
 	set1.Add(item2)
