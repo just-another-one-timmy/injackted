@@ -70,18 +70,6 @@ func crawl(index *structs.Index, fileNames []string) {
 			fmt.Printf("Processed file %v\t%6.2f%%\n", name, percentage)
 		}
 	}
-
-	// I am wondering, might it be the case that goroutine
-	// had sent values to c and w, and value from w was read first?
-	// Then c still contains the last keyword from the file.
-	select {
-	case docKeywordPair := <-c:
-		index.ConnectKeywordDoc(docKeywordPair.Keyword,
-			docKeywordPair.Doc)
-	default:
-		// nothing to do here, but we're sure that
-		// nothing is in the c channel.
-	}
 }
 
 // Copy-paste-hacked from sampleclient.go.
