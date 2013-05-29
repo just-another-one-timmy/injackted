@@ -39,7 +39,7 @@ func (i *Index) IsConnected(keyword interface{}, doc interface{}) bool {
 }
 
 // Returns an iterator over documents connected to given keyword in the index.
-func (i *Index) IteratorDocsByKeyword(keyword interface{}) chan interface{} {
+func (i *Index) IteratorDocsByKeyword(keyword interface{}) <-chan interface{} {
 	if _, present := i.docsByKeyword[keyword]; !present {
 		return NewSet().Iterator()
 	}
@@ -47,14 +47,14 @@ func (i *Index) IteratorDocsByKeyword(keyword interface{}) chan interface{} {
 }
 
 // Returns an iterator over keywords connected to given doc in the index.
-func (i *Index) IteratorKeywordsByDoc(doc interface{}) chan interface{} {
+func (i *Index) IteratorKeywordsByDoc(doc interface{}) <-chan interface{} {
 	if _, present := i.keywordsByDoc[doc]; !present {
 		return NewSet().Iterator()
 	}
 	return i.keywordsByDoc[doc].Iterator()
 }
 
-func iteratorOverMapKeys(mapToIterateOver map[interface{}]*Set) chan interface{} {
+func iteratorOverMapKeys(mapToIterateOver map[interface{}]*Set) <-chan interface{} {
 	resultChannel := make(chan interface{})
 	go func() {
 		for key, _ := range mapToIterateOver {
@@ -66,12 +66,12 @@ func iteratorOverMapKeys(mapToIterateOver map[interface{}]*Set) chan interface{}
 }
 
 // Returns an iterator over all keywords present in the index.
-func (i *Index) IteratorKeywords() chan interface{} {
+func (i *Index) IteratorKeywords() <-chan interface{} {
 	return iteratorOverMapKeys(i.docsByKeyword)
 }
 
 // Returns an iterator over all docs present in the index.
-func (i *Index) IteratorDocs() chan interface{} {
+func (i *Index) IteratorDocs() <-chan interface{} {
 	return iteratorOverMapKeys(i.keywordsByDoc)
 }
 

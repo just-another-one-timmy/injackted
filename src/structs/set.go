@@ -111,7 +111,7 @@ func (s *Set) Difference(otherSet *Set) *Set {
 }
 
 // Iterator over items.
-func (s *Set) Iterator() chan interface{} {
+func (s *Set) Iterator() <-chan interface{} {
 	iteratorChannel := make(chan interface{})
 	go func() {
 		for item, _ := range s.internal {

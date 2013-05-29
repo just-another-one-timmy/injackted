@@ -20,7 +20,7 @@ func reportError(err error) {
 	fmt.Fprintf(os.Stderr, "%v\n", err.Error())
 }
 
-func processFile(fileName string, c chan DocKeywordPair, w chan string, semaphore chan interface{}) {
+func processFile(fileName string, c chan<- DocKeywordPair, w chan<- string, semaphore chan interface{}) {
 	// Inform receiver that current goroutine is done.
 	defer func() {
 		w <- fileName
